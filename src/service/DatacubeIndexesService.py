@@ -27,7 +27,7 @@ class DatacubeIndexesService:
                     indexes_by_product.setdefault(product_id, []).append({
                         'source': index_dict['source'],
                         'aoi_label': index_dict['aoi_label'],
-                        'algoritm': algorithm,
+                        'algorithm': algorithm,
                         'version': index_dict['version']
                     })
 
