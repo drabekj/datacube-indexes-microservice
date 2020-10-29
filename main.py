@@ -30,8 +30,13 @@ def pull_economic_indexes(request):
     datacube_index_service = DatacubeIndexesService(request.json.get('authenticationToken'))
     index_catalog = datacube_index_service.get_indexes_by_product_id()
 
+    if index_catalog == {}:
+        status = 'failed'
+    else:
+        status = 'success'
+
     return {
-        'status': 'success',
+        'status': status,
         'results': index_catalog
     }
 
