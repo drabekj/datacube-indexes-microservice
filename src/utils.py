@@ -13,7 +13,7 @@ def filter_dict_by_keys_contain(in_dict: dict, filter_keys: list) -> dict:
     return new_dict
 
 
-def handle_exception_product_ids(datacube_source):
+def handle_exception_product_ids(datacube_source, source_polygons_short):
     exceptions = {
         'sar_change_c_m2_automotive_car_factory': 'LVM',
         'sar_change_c_m2_chemical_fertilizer_inorganic': 'MAN_CHE_INO',
@@ -24,7 +24,7 @@ def handle_exception_product_ids(datacube_source):
     if datacube_source in exceptions:
         return exceptions[datacube_source]
     else:
-        return datacube_source
+        return source_polygons_short
 
 
 def handle_exception_sources(datacube_source):
@@ -148,7 +148,7 @@ def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[
     index_polygon_structure = {k: "-".join([item[:3] for item in v]).upper() for k, v in index_polygon_structure.items()}
     source_polygons_short = "_".join([part for part in index_polygon_structure.values() if part])
 
-    source_polygons_short = handle_exception_product_ids(source)
+    source_polygons_short = handle_exception_product_ids(source, source_polygons_short)
 
     # Product Type
     product_types = ['SAI']
