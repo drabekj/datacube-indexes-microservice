@@ -13,6 +13,20 @@ def filter_dict_by_keys_contain(in_dict: dict, filter_keys: list) -> dict:
     return new_dict
 
 
+def handle_exception_product_ids(datacube_source):
+    exceptions = {
+        'sar_change_c_m2_automotive_car_factory': 'LVM',
+        'sar_change_c_m2_chemical_fertilizer_inorganic': 'MAN_CHE_INO',
+        'sar_c_chemical_fertilizer_inorganic_nitrogen': 'MAN_CHE_INO_NIT',
+        'sar_c_chemical_fertilizer_inorganic_potash': 'MAN_CHE_INO_POT',
+    }
+
+    if datacube_source in exceptions:
+        return exceptions[datacube_source]
+    else:
+        return datacube_source
+
+
 def handle_exception_sources(datacube_source):
     exceptions = {
         'sar_change_c_m2_distribution_center_inland_containers': 'sar_change_c_m2_distribution_center_containers_inland_containers',
@@ -21,7 +35,7 @@ def handle_exception_sources(datacube_source):
         'te_exports_m_sar_change_c_m2_distribution_ctr_inland_containers': 'te_exports_m_sar_change_c_m2_distribution_center_containers_inland_containers',
         'te_exports_m_sar_change_c_m2_distribution_ctr_port_containers': 'te_exports_m_sar_change_c_m2_distribution_center_containers_port_containers',
         'te_imports_m_sar_change_c_m2_distribution_ctr_port_containers': 'te_imports_m_sar_change_c_m2_distribution_center_containers_port_containers',
-        'te_factory_orders_sar_change_c_m2_distribution_ctr_inland_containers': 'te_factory_orders_sar_change_c_m2_distribution_center_containers_inland_containers'
+        'te_factory_orders_sar_change_c_m2_distribution_ctr_inland_containers': 'te_factory_orders_sar_change_c_m2_distribution_center_containers_inland_containers',
     }
 
     if datacube_source in exceptions:
@@ -133,6 +147,8 @@ def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[
 
     index_polygon_structure = {k: "-".join([item[:3] for item in v]).upper() for k, v in index_polygon_structure.items()}
     source_polygons_short = "_".join([part for part in index_polygon_structure.values() if part])
+
+    source_polygons_short = handle_exception_product_ids(source)
 
     # Product Type
     product_types = ['SAI']
