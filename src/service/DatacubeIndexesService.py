@@ -31,4 +31,7 @@ class DatacubeIndexesService:
                         'version': index_dict['version']
                     })
 
+        if indexes_by_product == {}:
+            return full_datacube_catalog
+
         return indexes_by_product
