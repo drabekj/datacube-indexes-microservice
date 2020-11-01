@@ -16,6 +16,7 @@ def filter_dict_by_keys_contain(in_dict: dict, filter_keys: list) -> dict:
 def handle_exception_product_ids(datacube_source, source_polygons_short):
     exceptions = {
         'sar_change_c_m2_automotive_car_factory': 'LVM',
+        'te_car_production_sar_change_c_m2_automotive_car_factory': 'LVM',
         'sar_change_c_m2_chemical_fertilizer_inorganic': 'MAN_CHE_INO',
         'sar_c_chemical_fertilizer_inorganic_nitrogen': 'MAN_CHE_INO_NIT',
         'sar_c_chemical_fertilizer_inorganic_potash': 'MAN_CHE_INO_POT',
