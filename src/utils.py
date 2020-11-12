@@ -90,37 +90,59 @@ def get_polygon_type_from_hierarchy(datacube_source: str, index_polygon_structur
     raise Exception(f'Unsuccessful parsing of : {datacube_source}')
 
 
-def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[str]:
+def datacube_to_product_id_agr(source: str, aoi_label: str, algorithm: str) -> List[str]:
     """
-    Generate possible Product IDs for a Datacube index. Works only for SAI and SAI daily products.
+    Generate possible Product IDs for a Datacube index. Works only for aggregated daily products.
 
-    1) source
-    sar_change_c_m2_mine_non_ore_limestone
-    sar_change_c_m2_airports_passenger
-    sar_change_c_m2_distribution_center_cars
-    sar_c_chemical_fertilizer_inorganic_nitrogen
-    2) source_polygons: get industry and type
-    mine_non_ore_limestone
-    airports_passenger
-    distribution_center_cars
-    chemical_fertilizer_inorganic_nitrogen
-
-    for industry in polygon_hierarchy:
-        for type in polygon_hierarchy.industry:
-            if type in source_polygons:
-                return industry, type, source_polygons[type.length:]
-    3) get sub_type
-    if source_polygons.length > 0:
-        relevant_types = polygon_hierarchy.industry.type
-        for sub_types in relevant_types:
-            if sub_type in sub_types:
-                return sub_type source_polygons[sub_type.length:]
+    Assumption: Aggregated product name is in `source` following "sar_change_c_m2_" or "sar_c_".
 
     :param source:
     :param aoi_label:
     :param algorithm:
-    :return:
+    :return: List of possible Product ID the index might belong to.
     """
+    product_ids = []
+
+    # Polygon Hierarchy
+    if 'sar_change_c_m2_' in source:
+        source_polygons = source.split("sar_change_c_m2_")[1]
+    elif 'sar_c_' in source:
+        source_polygons = source.split("sar_c_")[1]
+    else:
+        source_polygons = ""
+
+    # no need to look through the product hierarchy
+    source_polygons_short = source_polygons[:3].upper()
+
+    # Product Type
+    product_types = ['SAI']
+    if 'black_swan' in algorithm:
+        product_types = ['ASI']
+    elif 'imagery_coverage_rolling' in algorithm:
+        product_types.append('ASI')
+
+    for product_type in product_types:
+        product_ids.append(f'SK_AGR_{source_polygons_short}_{product_type}_{aoi_label.upper()}_D')
+
+    return product_ids
+
+
+def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[str]:
+    """
+    Generate possible Product IDs for a Datacube index. Works only for SAI,ASI and aggregated daily products.
+
+    :param source:
+    :param aoi_label:
+    :param algorithm:
+    :return: List of possible Product ID the index might belong to (eg. icr index belongs to both SAI and ASI products).
+    """
+    if 'weighted_index' in algorithm:
+        try:
+            return datacube_to_product_id_agr(source, aoi_label, algorithm)
+        except:
+            print(f'Unsuccessful parsing of index: source={source} aoi={aoi_label} algorithm={algorithm}')
+            return []
+
     product_ids = []
     source = handle_exception_sources(source)
 
@@ -145,7 +167,7 @@ def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[
             source_polygons, index_polygon_structure = get_polygon_type_from_hierarchy(source_polygons,
                                                                                        index_polygon_structure)
     except:
-        print(f'Unsuccessful parsiong of index: source={source} aoi={aoi_label} algorithm={algorithm}')
+        print(f'Unsuccessful parsing of index: source={source} aoi={aoi_label} algorithm={algorithm}')
         return []
 
     index_polygon_structure = {k: "-".join([item[:3] for item in v]).upper() for k, v in index_polygon_structure.items()}

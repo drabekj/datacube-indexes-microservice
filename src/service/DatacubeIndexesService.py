@@ -3,7 +3,8 @@ from src.utils import filter_dict_by_keys_contain, datacube_to_product_id
 
 SAI_ASI_ALGORITHMS = ['rolling_activity_index_value', 'imagery_coverage_rolling',
                       'rolling_black_swan_negative_anomaly', 'rolling_black_swan_normal_range',
-                      'rolling_black_swan_positive_anomaly']
+                      'rolling_black_swan_positive_anomaly',
+                      'weighted_index_value_12d', 'weighted_index_value_24d', 'weighted_index_value_30d']
 
 
 class DatacubeIndexesService:
