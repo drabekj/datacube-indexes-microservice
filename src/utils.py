@@ -1,4 +1,5 @@
 from typing import List
+from itertools import groupby
 
 from src.constants import polygon_hierarchy
 
@@ -188,6 +189,26 @@ def datacube_to_product_id(source: str, aoi_label: str, algorithm: str) -> List[
 
     # print(product_ids)
     return product_ids
+
+
+def filter_max_index_version(indexes_by_product):
+    new_indexes_by_product = {}
+
+    for product_id, indexes in indexes_by_product.items():
+        key_func = lambda i: (i['source'], i['aoi_label'], i['algorithm'])
+
+        version_grouped_indexes = []
+        for key, group in groupby(sorted(indexes, key=key_func), key_func):
+            version_grouped_indexes.append(list(group))
+
+        selected_indexes = []
+        for group in version_grouped_indexes:
+            newest_index = max(group, key=lambda x: x['version'])
+            selected_indexes.append(newest_index)
+
+        new_indexes_by_product[product_id] = selected_indexes
+
+    return new_indexes_by_product
 
 
 # Testing purpose

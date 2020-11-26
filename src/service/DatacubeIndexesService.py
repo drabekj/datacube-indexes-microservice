@@ -1,5 +1,5 @@
 from src.service.fetch_datacube import DatacubeService
-from src.utils import filter_dict_by_keys_contain, datacube_to_product_id
+from src.utils import filter_dict_by_keys_contain, datacube_to_product_id, filter_max_index_version
 
 SAI_ASI_ALGORITHMS = ['rolling_activity_index_value', 'imagery_coverage_rolling',
                       'rolling_black_swan_negative_anomaly', 'rolling_black_swan_normal_range',
@@ -31,6 +31,8 @@ class DatacubeIndexesService:
                         'algorithm': algorithm,
                         'version': index_dict['version']
                     })
+
+        indexes_by_product = filter_max_index_version(indexes_by_product)
 
         if indexes_by_product == {}:
             return full_datacube_catalog
