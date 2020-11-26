@@ -137,6 +137,14 @@ polygon_hierarchy = {
     'mining': {
         'mine': {
             'ore': {
+                'platinum': {
+                    'underground': {},
+                    'open_pit': {},
+                },
+                'diamond': {
+                    'underground': {},
+                    'open_pit': {},
+                },
                 'gold': {
                     'underground': {},
                     'open_pit': {},
@@ -185,6 +193,8 @@ polygon_hierarchy = {
         },
         'processing': {
             'coal': {},
+            'platinum': {},
+            'diamond': {},
         },
     },
     'transport': {
