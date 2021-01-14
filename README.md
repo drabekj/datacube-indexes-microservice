@@ -48,3 +48,7 @@ Example Response:
     "status": "success"
 }
 ```
+
+Known Issues:
+- airports_passenger_parking not working
+- airports_cargo_parking not working
